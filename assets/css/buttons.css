@@ -1,0 +1,76 @@
+/* ---- Base ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1;
+
+  border: none;
+  cursor: pointer;
+  user-select: none;
+
+  transition: 0.18s ease;
+}
+
+/* ---- Primary ---- */
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.btn-primary:hover {
+  background: var(--btn-primary-hover);
+}
+
+/* ---- Ghost ---- */
+.btn-ghost {
+  background: var(--btn-ghost-bg);
+  border: 1px solid var(--btn-ghost-border);
+  color: var(--btn-ghost-fg);
+}
+
+.btn-ghost:hover {
+  background: var(--btn-ghost-hover);
+}
+
+/* ---- Danger ---- */
+.btn-danger {
+  background: var(--btn-danger-bg);
+  color: var(--btn-danger-fg);
+}
+
+.btn-danger:hover {
+  background: var(--btn-danger-hover);
+}
+
+/* ---- Touch Device ---- */
+@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+  .btn,
+  .btn-primary,
+  .btn-ghost,
+  .btn-danger {
+    transition: none;
+  }
+
+  .btn:hover,
+  .btn-primary:hover,
+  .btn-ghost:hover,
+  .btn-danger:hover {
+    background: unset;
+    border-color: unset;
+    box-shadow: unset;
+  }
+
+  .btn:focus,
+  .btn:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+}

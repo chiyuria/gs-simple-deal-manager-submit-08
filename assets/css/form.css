@@ -1,0 +1,129 @@
+/* ---- base ---- */
+form {
+  width: 100%;
+}
+
+/* ---- form row ---- */
+.form-row {
+  display: grid;
+  grid-template-rows: auto 3.6rem;
+  gap: 0.6rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-family: var(--font-jp), var(--font-ui);
+}
+
+/* ---- input / select ---- */
+.form-row input[type="text"],
+/* .form-row input[type="email"], */
+.form-row select {
+  width: 100%;
+  height: 3.6rem;
+  padding: 0 1.2rem;
+
+  font-size: 1.4rem;
+  font-family: var(--font-jp), var(--font-ui);
+
+  color: var(--fg);
+  background: var(--form-bg);
+
+  border: 1px solid var(--form-border);
+  border-radius: var(--radius);
+
+  outline: none;
+  transition: 0.15s ease;
+}
+
+/* focus */
+.form-row input:focus,
+.form-row select:focus {
+  border-color: var(--form-border-focus);
+  background: var(--form-bg-focus);
+}
+
+/* placeholder */
+.form-row input::placeholder {
+  color: var(--fg-muted);
+  font-size: 1.3rem;
+}
+
+/* disabled */
+.form-row input:disabled,
+.form-row select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* validation */
+.form-row input:required:invalid,
+.form-row select:required:invalid {
+  border-color: var(--accent-danger);
+}
+
+.form-row input:required:valid,
+.form-row select:required:valid {
+  border-color: var(--accent-success);
+}
+
+.form-row select option {
+  background: #fff;
+  color: #000;
+}
+
+/* ---- fieldset ---- */
+fieldset {
+  padding: 1.6rem;
+  border-radius: 1rem;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.01)
+  );
+}
+
+legend {
+  padding: 0 0.8rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+/* original layout */
+.deal-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) auto;
+  gap: 1.2rem;
+  align-items: end;
+}
+
+.deal-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+}
+
+.customer-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) auto;
+  gap: 1.2rem;
+  align-items: end;
+}
+
+.filter-form {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-end;
+}
+
+/* ---- form button control ---- */
+.deal-submit,
+.filter-submit,
+.customer-submit {
+  height: 3.6rem;
+}

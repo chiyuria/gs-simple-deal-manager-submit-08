@@ -1,0 +1,45 @@
+/* responsive */
+@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+  .main-wrapper.single-column {
+    height: auto;
+  }
+
+  .col-content {
+    padding: var(--space-2);
+  }
+
+  form {
+    width: 100%;
+  }
+  .section-block {
+    max-width: 100%;
+  }
+  .table {
+    font-size: 1.2rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.6rem 0.8rem;
+    white-space: nowrap;
+  }
+  .deal-form,
+  .customer-form {
+    grid-template-columns: 1fr !important;
+    gap: 1.6rem;
+  }
+
+  .filter-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.2rem;
+  }
+
+  .deal-submit,
+  .customer-submit,
+  .filter-submit {
+    width: 100%;
+  }
+
+}
+
