@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/config/db.php";
+require_once(__DIR__ . "/inc/functions.php");
 
 $d_ids = $_POST["d_ids"] ?? [];
 
@@ -9,12 +9,7 @@ if(empty($d_ids)) {
 }
 
 // connect to DB
-try {
-    $server_info = "mysql:dbname=" . DB_NAME . ";charset=utf8;host=" . DB_HOST;
-    $pdo = new PDO($server_info, DB_USER, DB_PASS);
-} catch (PDOException $e) {
-    exit("Error: DB connection:" . $e->getMessage());
-}
+$pdo = db_conn();
 
 // create placeholder
 $placeholders = implode(",", array_fill(0, count($d_ids), "?"));

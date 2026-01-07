@@ -50,6 +50,31 @@
   background: var(--btn-danger-hover);
 }
 
+/* ---- Table Button (Compact) ---- */
+.btn-table {
+  padding: 0.4rem 0.8rem;        /* 行を圧迫しない最小サイズ */
+  font-size: 1.2rem;
+  line-height: 1;
+
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.btn-table--icon {
+  padding: 0.4rem;
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+/* ---- Button Reset for <a> ---- */
+a.btn {
+  text-decoration: none;   /* 下線殺す */
+  color: inherit;          /* 青文字殺す */
+}
+
+a.btn:visited {
+  color: inherit;          /* 訪問済み紫も殺す */
+}
+
 /* ---- Touch Device ---- */
 @media (hover: none) and (pointer: coarse), (max-width: 768px) {
   .btn,

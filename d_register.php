@@ -1,7 +1,7 @@
 <?php
 ini_set("display_errors", 1);
 
-require_once __DIR__ . '/config/db.php';
+require_once(__DIR__ . "/inc/functions.php");
 
 // deal registration
 $c_id = $_POST["c_id"];
@@ -22,15 +22,7 @@ if (!preg_match('/^\d{10}$/', $d_code)) {
 }
 
 // connect to DB
-try {
-    $server_info = 'mysql:dbname=' . DB_NAME . ';charset=utf8;host=' . DB_HOST;
-    $pdo = new PDO($server_info, DB_USER, DB_PASS);
-} catch (PDOException $e) {
-    exit('Error: DB connection:' . $e->getMessage());
-}
-
-// switch to exception mode
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo = db_conn();
 
 // create SQL
 $sql = "
@@ -48,6 +40,7 @@ $sql = "
         sysdate()
     )
 ";
+
 $stmt = $pdo->prepare($sql);
 
 $stmt->bindValue(':c_id', $c_id, PDO::PARAM_INT);
@@ -60,8 +53,8 @@ try {
     header('Location: index.php');
     exit;
 
-// Duplicate (UNIQUE) error
-//SQLSTATE: 23000 (+ MySQL error number: 1062)
+    // Duplicate (UNIQUE) error
+    //SQLSTATE: 23000 (+ MySQL error number: 1062)
 } catch (PDOException $e) {
     if ($e->getCode() === '23000') {
         header('Location: index.php?error=duplicate');

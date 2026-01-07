@@ -1,7 +1,7 @@
 <?php
 ini_set("display_errors", 1);
 
-require_once __DIR__ . '/config/db.php';
+require_once(__DIR__ . "/inc/functions.php");
 
 // customer registration
 $c_code = $_POST["c_code"];
@@ -20,15 +20,7 @@ if (!preg_match('/^\d{10}$/', $c_code)) {
 }
 
 // connect to DB
-try {
-    $server_info = 'mysql:dbname=' . DB_NAME . ';charset=utf8;host=' . DB_HOST;
-    $pdo = new PDO($server_info, DB_USER, DB_PASS);
-} catch (PDOException $e) {
-    exit('Error: DB connection:' . $e->getMessage());
-}
-
-// switch to exception mode
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo = db_conn();
 
 // create SQL
 $sql = "

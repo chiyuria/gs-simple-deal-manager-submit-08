@@ -2,7 +2,7 @@
 
 ## ① 課題名
 
-**Simple Deal Manager – PHP & MySQL CRUD App**
+**Simple Deal Manager v1.1 – PHP & MySQL CRUD App**
 
 ---
 
@@ -36,6 +36,16 @@ https://www.logic-craft.jp/bookmark-app/index.php
 ---
 
 ## ⑤ こだわった点
+
+### ■ DB接続処理の関数化（db_conn） --v1.1 Update
+DB接続処理を `inc/functions.php` の `db_conn()` に関数化し、  
+各処理ファイルから共通で呼び出せるようにしました。  
+接続情報（定数）は `config/db.php` に集約し、役割分離を意識しています。
+
+### ■ 案件の更新（UPDATE）機能の追加 --v1.1 Update
+一覧（index）から編集リンクで `d_edit.php?d_id=...` に遷移し、  
+該当データをフォームに初期表示 → `d_update.php` へPOST → UPDATE の流れで更新処理を追加しました。  
+更新対象IDは hidden で渡し、WHERE句で対象レコードを限定しています。
 
 ### ■ データの関連性を意識したDB設計（JOINの活用）
 
@@ -89,16 +99,12 @@ UIの一貫性と保守性を意識した構成にしています。
 
 ### ■ 難しかった点
 
-* PHPでのフォームデータの受け取りとバリデーション
-* PDOを用いたSQL実装
-* テーブルを分けた上での JOIN によるデータ取得
-* CRUD処理の責務整理
-
+* CRUD処理の責務整理（DB接続処理の関数化、編集画面と更新処理の分離）
+* 編集画面での初期値反映（value / selected / hidden を用いたフォーム制御）
 ---
 
 ### ■ 次回トライしたいこと
 
-* 更新処理（UPDATE）の追加
 * バリデーションの強化
 * ソート・フィルタ機能の実装
 * 認証付きの管理画面
@@ -109,14 +115,13 @@ UIの一貫性と保守性を意識した構成にしています。
 ## ⑦ フリー項目
 
 今回は  
-**PHPとデータベース処理の基礎を確実に理解すること**を最優先にし、  
-あえて機能を盛りすぎず、  
-CRUDの基本的な流れを中心に実装しました。
+登録・一覧表示だけで終わらせず、
+編集（EDIT）・更新（UPDATE）まで含めたCRUD一連の流れを実装しました。
 
-単にデータを表示するだけでなく、  
-「データ同士の関係性をどう保つか」  
-「一部の変更が他に影響しない構成とは何か」  
-といった点を意識しながら設計しています。
+DB接続処理の関数化や、
+編集画面と更新処理の分離など、
+「処理ごとの責務をどう分けるか」を意識することで、
+機能追加や修正に強い構成を目指しています。
 
 ---
 
@@ -133,13 +138,17 @@ CRUDの基本的な流れを中心に実装しました。
 フォーム入力からDB登録、一覧表示、削除までの一連の流れを  
 最小構成で実装しています。
 
+🔹 **V1.1では、案件データの編集・更新（UPDATE）処理を追加し、  
+CRUD一連の操作を一通り実装しました。**
+
 ---
 
 ## 🎯 テーマ・学習目的
 
 * PHPによるフォーム送信・受信処理
 * MySQL（PDO）を用いたデータベース操作
-* CRUD（Create / Read / Delete）の基本実装
+* CRUD（Create / Read / Delete）の基本実装  
+  🔹 **＋ Update（編集・更新）処理の追加**
 * include を用いた共通コンポーネントの分離
 * CSSのコンポーネント設計によるUI整理
 
@@ -164,10 +173,19 @@ CRUDの基本的な流れを中心に実装しました。
 * 登録済みデータをテーブル形式で表示
 * 複数データを想定したレイアウト
 * 横スクロール対応テーブルUI
+* 🔹 **編集画面への導線（編集リンク）の追加**
+
+### ▼ 編集・更新機能（V1.1追加）
+
+* 一覧画面から編集対象を選択
+* 対象案件データを取得し、フォームに初期値として表示
+* hidden要素でIDを保持し、更新処理を実行
+* UPDATE専用PHPファイルによる責務分離
 
 ### ▼ 削除機能
 
 * 登録データの削除処理
+* チェックボックスによる複数選択削除
 * 削除処理専用PHPファイルによる責務分離
 
 ---
@@ -179,7 +197,9 @@ CRUDの基本的な流れを中心に実装しました。
 
 ### 主な設計意図
 
-* DB接続処理は `config/db.php` に集約
+* DB接続情報は `config/db.php` に集約
+* 🔹 **DB接続処理を `db_conn()` として関数化し、  
+  `inc/functions.php` に切り出し**
 * XSS対策用関数を `functions.php` に切り出し
 * ヘッダー部分は共通コンポーネントとして include
 * CSSは役割単位で分割（button / form / table など）
@@ -208,24 +228,28 @@ CRUDの基本的な流れを中心に実装しました。
 ```
 assets/
 └─ css/
-├─ style.css        // 共通スタイル・変数定義
-├─ form.css         // フォームUI
-├─ buttons.css      // ボタンコンポーネント
-├─ table.css        // テーブルUI
-└─ scroll.css       // スクロール調整
+├─ buttons.css
+├─ form.css
+├─ responsive.css
+├─ scroll.css
+├─ style.css
+└─ table.css
 
 config/
-└─ db.php              // DB接続設定
+├─ .htaccess
+└─ db.php
 
 inc/
-├─ header.html         // 共通ヘッダー
-└─ functions.php      // 共通関数（XSS対策）
+├─ functions.php // 共通関数（h(), db_conn()）
+└─ header.html // 共通ヘッダー
 
-index.php              // 一覧表示
-c_register.php         // 顧客登録
-c_manage.php           // 顧客管理
-d_register.php         // 案件登録
-d_delete.php           // データ削除
+index.php // 案件一覧（JOIN / 編集導線 / 削除チェック）
+c_register.php // 顧客登録
+c_manage.php // 顧客管理
+d_register.php // 案件登録
+d_edit.php // 案件編集（V1.1）
+d_update.php // 案件更新（V1.1）
+d_delete.php // 案件削除
 
 ```
 
@@ -237,7 +261,7 @@ d_delete.php           // データ削除
 2. データベースを作成し、テーブルを準備
 3. ブラウザで `index.php` にアクセス
 4. 顧客・案件データを登録
-5. 一覧画面で内容を確認・削除
+5. 一覧画面から内容の確認・編集・削除を実行
 
 ---
 
@@ -245,7 +269,8 @@ d_delete.php           // データ削除
 
 * PHPによるフォーム処理の基本
 * PDOを用いた安全なDB操作
-* CRUD処理の役割分離
+* CRUD処理の役割分離  
+  🔹 **編集画面と更新処理の分離設計**
 * include によるコード再利用
 * UIとロジックの整理
 
@@ -267,8 +292,11 @@ that allows users to register and manage **customers** and **deal records**.
 
 The main purpose of this project is to practice  
 **database operations (CRUD) using PHP and MySQL**.  
-It implements the full flow from form input to database insertion,  
-list display, and deletion using a minimal and clear structure.
+It implements the flow from form input to database insertion,  
+list display, deletion, and editing using a minimal and clear structure.
+
+🔹 **In version 1.1, edit and update (UPDATE) functionality was added,  
+completing the basic CRUD cycle.**
 
 ---
 
@@ -276,7 +304,8 @@ list display, and deletion using a minimal and clear structure.
 
 - Handling form submission with PHP
 - Database operations using MySQL (PDO)
-- Basic implementation of CRUD (Create / Read / Delete)
+- Basic implementation of CRUD  
+  🔹 **including Update (edit & update processing)**
 - Separating common components using `include`
 - Organizing UI with component-based CSS design
 
@@ -301,10 +330,20 @@ list display, and deletion using a minimal and clear structure.
 - Display registered data in a table format
 - Layout designed for multiple records
 - Horizontally scrollable table UI
+- 🔹 **Edit links added for each record**
+
+### ▼ Edit & Update Function (Added in v1.1)
+
+- Select a target record from the list view
+- Fetch the selected deal data and prefill the edit form
+- Preserve the record ID using a hidden field
+- Execute UPDATE processing via a dedicated PHP file
+- Clear separation between edit and update responsibilities
 
 ### ▼ Delete Function
 
 - Delete registered records
+- Support for selecting multiple records using checkboxes
 - Dedicated PHP file for delete processing to separate responsibilities
 
 ---
@@ -316,7 +355,9 @@ This application is structured with a focus on
 
 ### Key design points:
 
-- Database connection logic is centralized in `config/db.php`
+- Database connection settings are centralized in `config/db.php`
+- 🔹 **Database connection logic is encapsulated in a reusable `db_conn()` function  
+  defined in `inc/functions.php`**
 - XSS protection helper functions are separated into `functions.php`
 - The header is implemented as a shared component using `include`
 - CSS is split by role (button / form / table, etc.)
@@ -346,26 +387,29 @@ to be resilient to future changes and extensions.
 
 assets/
 └─ css/
-├─ style.css        // Base styles and variables
-├─ form.css         // Form UI styles
-├─ buttons.css      // Button components
-├─ table.css        // Table UI styles
-└─ scroll.css       // Scrollbar customization
+├─ style.css // Base styles and variables
+├─ form.css // Form UI styles
+├─ buttons.css // Button components
+├─ table.css // Table UI styles
+└─ scroll.css // Scrollbar customization
 
 config/
-└─ db.php              // Database connection
+└─ db.php // Database configuration
 
 inc/
-├─ header.html         // Shared header
-└─ functions.php      // Common helper functions (XSS protection)
+├─ header.html // Shared header
+└─ functions.php // Common helper functions (XSS protection, db_conn)
 
-index.php              // List view
-c_register.php         // Customer registration
-c_manage.php           // Customer management
-d_register.php         // Deal registration
-d_delete.php           // Data deletion
+index.php // Deal list view (JOIN / edit links / delete checkboxes)
+c_register.php // Customer registration
+c_manage.php // Customer management
+d_register.php // Deal registration
+d_edit.php // Deal edit screen (v1.1)
+d_update.php // Deal update processing (v1.1)
+d_delete.php // Deal deletion
 
 ```
+
 
 ---
 
@@ -375,7 +419,7 @@ d_delete.php           // Data deletion
 2. Create a database and required tables
 3. Access `index.php` in your browser
 4. Register customers and deals
-5. View and delete records from the list screen
+5. View, edit, update, or delete records from the list screen
 
 ---
 
@@ -383,7 +427,8 @@ d_delete.php           // Data deletion
 
 - Basic form handling with PHP
 - Safe database operations using PDO
-- Responsibility separation in CRUD processing
+- Clear separation of responsibilities in CRUD processing  
+  🔹 **including edit and update workflows**
 - Code reuse with `include`
 - Structuring UI and logic for maintainability
 

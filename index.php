@@ -174,6 +174,7 @@ $deals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <th>顧客名</th>
                                     <th>案件名</th>
                                     <th>売上</th>
+                                    <th>編集</th>
                                     <th>削除</th>
                                 </tr>
                             </thead>
@@ -184,6 +185,11 @@ $deals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?= h($d["c_name"]) ?></td>
                                         <td><?= h($d["d_name"]) ?></td>
                                         <td><?= number_format($d["d_sales"]) ?></td>
+                                        <td>
+                                            <a class="btn btn-ghost btn-table btn-table--icon" href="d_edit.php?d_id=<?= h($d["d_id"]) ?>">
+                                                📝
+                                            </a>
+                                        </td>
                                         <td>
                                             <input type="checkbox" name="d_ids[]" value="<?= h($d["d_id"]) ?>">
                                         </td>
