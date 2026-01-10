@@ -52,7 +52,7 @@
 
 /* ---- Table Button (Compact) ---- */
 .btn-table {
-  padding: 0.4rem 0.8rem;        /* 行を圧迫しない最小サイズ */
+  padding: 0.4rem 0.8rem; /* Minimum size that does not compress the line */
   font-size: 1.2rem;
   line-height: 1;
 
@@ -67,12 +67,12 @@
 
 /* ---- Button Reset for <a> ---- */
 a.btn {
-  text-decoration: none;   /* 下線殺す */
-  color: inherit;          /* 青文字殺す */
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Kill the blue text */
 }
 
 a.btn:visited {
-  color: inherit;          /* 訪問済み紫も殺す */
+  color: inherit; /* Kill visited purple */
 }
 
 /* ---- Touch Device ---- */

@@ -3,9 +3,8 @@ require_once(__DIR__ . "/inc/functions.php");
 
 $d_ids = $_POST["d_ids"] ?? [];
 
-if(empty($d_ids)) {
-    header("Location: index.php");
-    exit;
+if (empty($d_ids)) {
+    redirect("index.php");
 }
 
 // connect to DB
@@ -23,5 +22,4 @@ $stmt = $pdo->prepare($sql);
 
 $stmt->execute($d_ids);
 
-header("Location: index.php");
-exit;
+redirect("index.php");

@@ -2,8 +2,7 @@
 require_once __DIR__ . "/config/db.php";
 require_once __DIR__ . "/inc/functions.php";
 
-$server_info = 'mysql:dbname=' . DB_NAME . ';charset=utf8;host=' . DB_HOST;
-$pdo = new PDO($server_info, DB_USER, DB_PASS);
+$pdo = db_conn();
 
 $sql = "
     SELECT 
@@ -57,7 +56,7 @@ $customers = $stmt->fetchAll();
                     <p style="color:red">Customer code already exists.</p>
                 <?php endif; ?>
 
-                <form action="c_register.php" method="post">
+                <form action="customer_create_action.php" method="post">
                     <fieldset class="customer-form">
 
                         <legend class="form-legend">顧客登録</legend>

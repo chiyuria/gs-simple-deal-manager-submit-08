@@ -9,14 +9,12 @@ $c_name = $_POST["c_name"];
 
 // validation: blank fields prohibited
 if ($c_code === '' || $c_name === '') {
-    header('Location: c_manage.php?error=blank');
-    exit;
+    redirect("customers_list.php?error=blank");
 }
 
 // validation: c_code is not 10 digits
 if (!preg_match('/^\d{10}$/', $c_code)) {
-    header('Location: c_manage.php?error=code');
-    exit;
+    redirect("customers_list.php?error=code");
 }
 
 // connect to DB
@@ -41,15 +39,13 @@ $stmt->bindValue(':c_name', $c_name, PDO::PARAM_STR);
 
 try {
     $stmt->execute();
-    header('Location: c_manage.php');
-    exit;
+    redirect("customers_list.php");
 
 // Duplicate (UNIQUE) error
 //SQLSTATE: 23000 (+ MySQL error number: 1062)
 } catch (PDOException $e) {
     if ($e->getCode() === '23000') {
-        header('Location: c_manage.php?error=duplicate');
-        exit;
+        redirect("customers_list.php?error=duplicate");
     }
 
     exit('error: SQL execution' . $e->getMessage());

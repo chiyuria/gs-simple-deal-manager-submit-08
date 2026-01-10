@@ -18,3 +18,8 @@ function db_conn() {
         exit('Error: DB connection:' . $e->getMessage());
     }
 }
+
+function redirect($path) {
+    header("Location: " . $path);
+    exit;
+}

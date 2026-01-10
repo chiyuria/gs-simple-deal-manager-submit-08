@@ -2,8 +2,7 @@
 require_once __DIR__ . "/config/db.php";
 require_once __DIR__ . "/inc/functions.php";
 
-$server_info = 'mysql:dbname=' . DB_NAME . ';charset=utf8;host=' . DB_HOST;
-$pdo = new PDO($server_info, DB_USER, DB_PASS);
+$pdo = db_conn();
 
 $sqlCustomers = "
     SELECT c_id, 
@@ -85,7 +84,7 @@ if (!$deal) {
                 <?php endif; ?>
 
                 <!-- register -->
-                <form action="d_update.php" method="post">
+                <form action="deal_update_action.php" method="post">
                     <fieldset>
                         <legend class="form-legend">案件編集</legend>
                         <div class="deal-form">

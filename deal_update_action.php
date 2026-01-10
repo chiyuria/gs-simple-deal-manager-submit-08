@@ -9,8 +9,7 @@ $d_sales = $_POST["d_sales"];
 
 // validation: blank fields prohibited
 if ($d_id === "" || $c_id === "" || $d_code === "" || $d_name === "" || $d_sales === "") {
-    header("Location: d_edit.php?d_id=" . urlencode($d_id) . "&error=blank");
-    exit;
+    redirect("deal_edit.php?d_id=" . urlencode($d_id) . "&error=blank");
 }
 
 // connect to DB
@@ -36,5 +35,4 @@ $stmt->bindValue(":d_id", $d_id, PDO::PARAM_INT);
 $stmt->execute();
 
 // back to top
-header("Location: index.php");
-exit;
+redirect("index.php");
