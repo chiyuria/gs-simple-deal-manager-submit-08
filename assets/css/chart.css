@@ -22,7 +22,8 @@
 /* ===== Chart Area ===== */
 .chart-wrap {
   width: 100%;
-  height: 480px;
+  min-height: 480px;
+  height: var(--chart-height, auto);
   position: relative;
 }
 
@@ -39,7 +40,7 @@
   }
 
   .chart-wrap {
-    height: 320px;
+    min-height: 320px;
   }
 
   .sales-chart h2,

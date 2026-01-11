@@ -2,15 +2,13 @@
 
 ## ① 課題名
 
-## ① 課題名
-
 **Simple Deal Manager v1.2 – PHP & MySQL CRUD + Data Visualization App**
 
 ---
 
 ## ② 課題内容（どんな作品か）
 
-顧客情報と案件（Deal）データを登録・管理できる  
+顧客情報と案件（Deal）データを登録・管理できる
 **シンプルな業務データ管理アプリ**です。
 
 本課題では、PHPとMySQLを用いたCRUD処理の理解に加え、
@@ -20,34 +18,35 @@ DB接続処理、データ取得・更新処理、表示ロジックを明確に
 機能追加や修正時にも影響範囲を限定できる構成としています。
 
 特に v1.1 では、
-- DB接続処理の関数化
-- 編集画面と更新処理の分離
-- 処理専用PHPファイルへの役割分担
+
+* DB接続処理の関数化
+* 編集画面と更新処理の分離
+* 処理専用PHPファイルへの役割分担
 
 を行い、**「動く」だけでなく「保守しやすいCRUD構成」**を意識した設計にアップデートしました。
 
-また v1.2 では、  
+また v1.2 では、
 案件・顧客データを **集計・可視化する機能** を追加しました。
 
-顧客マスタと案件テーブルを JOIN し、  
-顧客別売上を集計した結果を  
+顧客マスタと案件テーブルを JOIN し、
+顧客別売上を集計した結果を
 **Chart.js を用いたグラフ表示ページとして独立実装**しています。
 
-一覧画面への単純な埋め込みではなく、  
-グラフ専用ページとして切り出すことで、  
+一覧画面への単純な埋め込みではなく、
+グラフ専用ページとして切り出すことで、
 表示ロジック・集計処理・UI構造を明確に分離しました。
 
-これにより、  
-「登録・更新するCRUD画面」と  
-「状況を俯瞰する可視化画面」を  
+これにより、
+「登録・更新するCRUD画面」と
+「状況を俯瞰する可視化画面」を
 役割の異なる画面として整理しています。
 
 ---
 
 ## ③ アプリのデプロイURL
 
-**アプリURL**  
-https://www.logic-craft.jp/bookmark-app/index.php
+**アプリURL**
+[https://www.logic-craft.jp/bookmark-app/index.php](https://www.logic-craft.jp/bookmark-app/index.php)
 
 ---
 
@@ -68,63 +67,73 @@ https://www.logic-craft.jp/bookmark-app/index.php
 **役割が曖昧になりやすい処理を明示的に分離**しました。
 
 ### ■ DB接続処理の関数化（db_conn） --v1.1 Update
-DB接続処理を `inc/functions.php` の `db_conn()` に関数化し、  
-各処理ファイルから共通で呼び出せるようにしました。  
+
+DB接続処理を `inc/functions.php` の `db_conn()` に関数化し、
+各処理ファイルから共通で呼び出せるようにしました。
 接続情報（定数）は `config/db.php` に集約し、役割分離を意識しています。
 
 ### ■ 案件の更新（UPDATE）機能の追加 --v1.1 Update
-一覧（index）から編集リンクで `deal_edit.php?d_id=...` に遷移し、  
-該当データをフォームに初期表示 → `deal_update_action.php` へPOST → UPDATE の流れで更新処理を追加しました。  
+
+一覧（index）から編集リンクで `deal_edit.php?d_id=...` に遷移し、
+該当データをフォームに初期表示 → `deal_update_action.php` へPOST → UPDATE の流れで更新処理を追加しました。
 更新対象IDは hidden で渡し、WHERE句で対象レコードを限定しています。
 
 ### ■ データ集計・可視化ページの追加--v1.2 Update
-v1.2 では、  
-顧客別売上を集計・可視化するための  
+
+v1.2 では、
+顧客別売上を集計・可視化するための
 グラフ専用ページ（sales_chart.php）を追加しました。
 
-顧客マスタ（customer_master）と  
-案件テーブル（deal_master）を LEFT JOIN し、  
+顧客マスタ（customer_master）と
+案件テーブル（deal_master）を LEFT JOIN し、
 売上が未登録の顧客も含めて集計しています。
 
-集計結果は PHP 側で JSON に変換し、  
+集計結果は PHP 側で JSON に変換し、
 Chart.js を用いて棒グラフとして描画しています。
 
-売上の有無に関わらず、  
-顧客マスタに登録されている全顧客を把握できるよう、  
+売上の有無に関わらず、
+顧客マスタに登録されている全顧客を把握できるよう、
 集計処理では LEFT JOIN を前提としています。
 
-これにより、  
-「売上がまだ発生していない顧客」も  
-0 円として可視化でき、  
+これにより、
+「売上がまだ発生していない顧客」も
+0 円として可視化でき、
 管理ツールとしての現状把握を重視した設計としています。
 
 ### ■ グラフ描画における責務分離 --v1.2 Update
+
 グラフ描画にあたっては、
 
-・PHP：データ取得・集計・JSON化  
-・JavaScript：Chart.js による描画  
+・PHP：データ取得・集計・JSON化
+・JavaScript：Chart.js による描画（module）
 ・CSS：グラフ専用レイアウト（chart.css）
 
 と、役割を分離して実装しています。
 
-特に CSS は既存スタイルと切り分け、  
+JavaScript は `assets/js/renderChart.js` に切り出し、
+`sales_chart.php` 側で **`<script type="module">` による import** で読み込み、
+`renderSalesChart()` を呼び出して描画しています。
+また、PHP側で用意した集計データは `window.salesChartData` として渡し、
+JS側は描画に専念する構成にしています。
+
+特に CSS は既存スタイルと切り分け、
 グラフ専用の chart.css として追加しました。
 
-これにより、  
-一覧画面やフォーム画面のスタイルに影響を与えず、  
+これにより、
+一覧画面やフォーム画面のスタイルに影響を与えず、
 可視化UIを独立して調整できる構成としています。
 
 ### ■ データの関連性を意識したDB設計（JOINの活用）
 
-顧客テーブルと案件テーブルを分離し、  
+顧客テーブルと案件テーブルを分離し、
 一覧表示時に JOIN を用いてデータを取得しています。
 
-これにより、  
-片方のデータ構造や内容を変更した場合でも  
+これにより、
+片方のデータ構造や内容を変更した場合でも
 他方のデータを破壊しない設計を意識しました。
 
-データの関連性を  
-**DB設計とSQLで担保する**ことで、  
+データの関連性を
+**DB設計とSQLで担保する**ことで、
 表示ロジックをシンプルに保っています。
 
 ---
@@ -137,14 +146,14 @@ Chart.js を用いて棒グラフとして描画しています。
 * 一覧表示処理
 * 削除処理
 
-をファイル単位で分離し、  
+をファイル単位で分離し、
 処理の流れが追いやすい構成を意識しました。
 
 ---
 
 ### ■ include を用いた共通コンポーネント化
 
-共通ヘッダーを `include` で読み込み、  
+共通ヘッダーを `include` で読み込み、
 HTML構造の重複を避けています。
 
 ---
@@ -157,6 +166,7 @@ CSSを以下のように役割ごとに分割しています。
 * フォームUI
 * ボタンUI
 * テーブルUI
+* グラフUI（v1.2）
 
 UIの一貫性と保守性を意識した構成にしています。
 
@@ -168,6 +178,8 @@ UIの一貫性と保守性を意識した構成にしています。
 
 * CRUD処理の責務整理（DB接続処理の関数化、編集画面と更新処理の分離）
 * 編集画面での初期値反映（value / selected / hidden を用いたフォーム制御）
+* JOINによる一覧表示・集計処理の整理
+
 ---
 
 ### ■ 次回トライしたいこと
@@ -176,12 +188,13 @@ UIの一貫性と保守性を意識した構成にしています。
 * ソート・フィルタ機能の実装
 * 認証付きの管理画面
 * DB設計の拡張（外部キー制約など）
+* 可視化ページの拡張（期間フィルタ、ランキング表示など）
 
 ---
 
 ## ⑦ フリー項目
 
-今回は  
+今回は
 登録・一覧表示だけで終わらせず、
 編集（EDIT）・更新（UPDATE）まで含めたCRUD一連の流れを実装しました。
 
@@ -267,6 +280,7 @@ CRUD機能に加え、**「データを俯瞰する画面」**を導入するこ
 * 売上未登録の顧客も 0 円として可視化
 * 集計結果を Chart.js で棒グラフ表示
 * グラフ専用ページとして独立実装
+* JavaScriptは `assets/js/renderChart.js` を **ES Modules** として読み込み描画
 
 ---
 
@@ -282,6 +296,7 @@ CRUD機能に加え、**「データを俯瞰する画面」**を導入するこ
 * XSS対策用のエスケープ関数を共通関数として管理
 * HTMLヘッダーを共通コンポーネントとして include
 * CSSはUIの役割ごとに分割（button / form / table / chart）
+* グラフ描画は「PHP(集計) → JS(module描画) → CSS(レイアウト)」で役割分担
 * 顧客テーブルと案件テーブルを分離し、
   一覧表示・集計時は **JOIN を用いてデータの関連性をDB側で担保**
 
@@ -304,14 +319,16 @@ CRUD画面と可視化画面を分離することで、
 
 ```
 assets/
-└─ css/
-   ├─ buttons.css      // ボタンUI
-   ├─ chart.css        // グラフ専用スタイル（V1.2）
-   ├─ form.css         // フォームUI
-   ├─ responsive.css   // レスポンシブ対応
-   ├─ scroll.css       // スクロールUI
-   ├─ style.css        // 共通スタイル
-   └─ table.css        // テーブルUI
+├─ css/
+│  ├─ buttons.css      // ボタンUI
+│  ├─ chart.css        // グラフ専用スタイル（V1.2）
+│  ├─ form.css         // フォームUI
+│  ├─ responsive.css   // レスポンシブ対応
+│  ├─ scroll.css       // スクロールUI
+│  ├─ style.css        // 共通スタイル
+│  └─ table.css        // テーブルUI
+└─ js/
+   └─ renderChart.js   // Chart描画モジュール（V1.2）
 
 config/
 ├─ .htaccess
@@ -353,6 +370,7 @@ sales_chart.php            // 顧客別売上グラフ（V1.2）
 * 編集画面と更新処理を分離した設計
 * include を用いたコード再利用
 * 集計データの可視化とUI整理
+* JavaScriptモジュール（ES Modules）での描画ロジック分離
 
 ---
 
@@ -444,6 +462,7 @@ a more practical business-oriented structure.
 * Include customers with no sales as zero-value data
 * Visualize aggregated results using **Chart.js**
 * Implemented as an independent page for clear responsibility separation
+* Chart rendering logic is separated into an ES module: `assets/js/renderChart.js`
 
 ---
 
@@ -460,6 +479,11 @@ This application is structured with a strong focus on
 * XSS protection helper functions are managed as shared utilities
 * The HTML header is implemented as a shared component using `include`
 * CSS is split by role (button / form / table / chart / responsive, etc.)
+* The chart page separates responsibilities:
+
+  * PHP: fetch/aggregate data and pass it as JSON (`window.salesChartData`)
+  * JavaScript: render the chart via an ES module (`renderSalesChart()`)
+  * CSS: chart-specific layout in `chart.css`
 * Customer and deal data are stored in separate tables
 * List views and aggregation logic retrieve data using **SQL JOINs**,
   ensuring that data relationships are enforced at the database level
@@ -484,14 +508,16 @@ and easier to maintain.
 
 ```
 assets/
-└─ css/
-   ├─ buttons.css      // Button UI styles
-   ├─ chart.css        // Chart-specific styles (v1.2)
-   ├─ form.css         // Form UI styles
-   ├─ responsive.css   // Responsive layout
-   ├─ scroll.css       // Scrollbar customization
-   ├─ style.css        // Base styles and variables
-   └─ table.css        // Table UI styles
+├─ css/
+│  ├─ buttons.css      // Button UI styles
+│  ├─ chart.css        // Chart-specific styles (v1.2)
+│  ├─ form.css         // Form UI styles
+│  ├─ responsive.css   // Responsive layout
+│  ├─ scroll.css       // Scrollbar customization
+│  ├─ style.css        // Base styles and variables
+│  └─ table.css        // Table UI styles
+└─ js/
+   └─ renderChart.js   // Chart rendering module (v1.2)
 
 config/
 ├─ .htaccess
@@ -534,6 +560,7 @@ sales_chart.php            // Customer sales chart (v1.2)
 * Clear distinction between UI files and action files
 * Code reuse with `include`
 * Aggregating and visualizing data for business insight
+* Keeping chart rendering logic in a dedicated ES module
 
 ---
 
@@ -543,3 +570,4 @@ sales_chart.php            // Customer sales chart (v1.2)
 * Security measures and validation are intentionally minimal
 
 ---
+

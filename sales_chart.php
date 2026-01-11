@@ -74,35 +74,21 @@ $data_json = json_encode($data, JSON_UNESCAPED_UNICODE);
         </div>
     </main>
 
+    <!-- render chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
-        const labels = <?= $labels_json ?>;
-        const data = <?= $data_json ?>;
-
-        const canvas = document.getElementById("customerSalesChart");
-        const ctx = canvas.getContext("2d");
-
-        const chart = new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: "売上",
-                    data: data
-                }]
-            },
-            options: {
-                indexAxis: "y",
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
+        window.salesChartData = {
+            labels: <?= $labels_json ?>,
+            data: <?= $data_json ?>
+        };
     </script>
+
+    <script type="module">
+        import { renderSalesChart } from "./assets/js/renderSalesChart.js";
+        renderSalesChart();
+    </script>
+
 </body>
 
 </html>
