@@ -2,7 +2,9 @@
 
 ## ① 課題名
 
-**Simple Deal Manager v1.1 – PHP & MySQL CRUD App**
+## ① 課題名
+
+**Simple Deal Manager v1.2 – PHP & MySQL CRUD + Data Visualization App**
 
 ---
 
@@ -23,6 +25,22 @@ DB接続処理、データ取得・更新処理、表示ロジックを明確に
 - 処理専用PHPファイルへの役割分担
 
 を行い、**「動く」だけでなく「保守しやすいCRUD構成」**を意識した設計にアップデートしました。
+
+また v1.2 では、  
+案件・顧客データを **集計・可視化する機能** を追加しました。
+
+顧客マスタと案件テーブルを JOIN し、  
+顧客別売上を集計した結果を  
+**Chart.js を用いたグラフ表示ページとして独立実装**しています。
+
+一覧画面への単純な埋め込みではなく、  
+グラフ専用ページとして切り出すことで、  
+表示ロジック・集計処理・UI構造を明確に分離しました。
+
+これにより、  
+「登録・更新するCRUD画面」と  
+「状況を俯瞰する可視化画面」を  
+役割の異なる画面として整理しています。
 
 ---
 
@@ -58,6 +76,43 @@ DB接続処理を `inc/functions.php` の `db_conn()` に関数化し、
 一覧（index）から編集リンクで `deal_edit.php?d_id=...` に遷移し、  
 該当データをフォームに初期表示 → `deal_update_action.php` へPOST → UPDATE の流れで更新処理を追加しました。  
 更新対象IDは hidden で渡し、WHERE句で対象レコードを限定しています。
+
+### ■ データ集計・可視化ページの追加--v1.2 Update
+v1.2 では、  
+顧客別売上を集計・可視化するための  
+グラフ専用ページ（sales_chart.php）を追加しました。
+
+顧客マスタ（customer_master）と  
+案件テーブル（deal_master）を LEFT JOIN し、  
+売上が未登録の顧客も含めて集計しています。
+
+集計結果は PHP 側で JSON に変換し、  
+Chart.js を用いて棒グラフとして描画しています。
+
+売上の有無に関わらず、  
+顧客マスタに登録されている全顧客を把握できるよう、  
+集計処理では LEFT JOIN を前提としています。
+
+これにより、  
+「売上がまだ発生していない顧客」も  
+0 円として可視化でき、  
+管理ツールとしての現状把握を重視した設計としています。
+
+### ■ グラフ描画における責務分離 --v1.2 Update
+グラフ描画にあたっては、
+
+・PHP：データ取得・集計・JSON化  
+・JavaScript：Chart.js による描画  
+・CSS：グラフ専用レイアウト（chart.css）
+
+と、役割を分離して実装しています。
+
+特に CSS は既存スタイルと切り分け、  
+グラフ専用の chart.css として追加しました。
+
+これにより、  
+一覧画面やフォーム画面のスタイルに影響を与えず、  
+可視化UIを独立して調整できる構成としています。
 
 ### ■ データの関連性を意識したDB設計（JOINの活用）
 
@@ -150,8 +205,15 @@ DB接続処理の関数化や、
 フォーム入力からDB登録、一覧表示、編集、削除までの一連の流れを
 最小構成で実装しています。
 
-🔹 **V1.1では、処理ごとの責務分離を意識してファイル構成を再整理し、
-編集・更新（UPDATE）機能を含むCRUD一連の操作を実装しました。**
+🔹 **V1.1**
+処理ごとの責務分離を意識してファイル構成を再整理し、
+編集・更新（UPDATE）機能を含むCRUD一連の操作を実装しました。
+
+🔹 **V1.2**
+顧客・案件データを集計し、
+**顧客別売上をグラフとして可視化する専用ページを追加**しました。
+CRUD機能に加え、**「データを俯瞰する画面」**を導入することで、
+業務アプリとしての構成を一段拡張しています。
 
 ---
 
@@ -163,6 +225,7 @@ DB接続処理の関数化や、
 * 処理ごとの責務分離を意識したファイル設計
 * include を用いた共通コンポーネントの分離
 * CSSのコンポーネント設計によるUI整理
+* 集計結果の可視化（Chart.js）
 
 ---
 
@@ -198,6 +261,13 @@ DB接続処理の関数化や、
 * チェックボックスによる複数選択削除
 * 削除処理専用PHPファイルによる責務分離
 
+### ▼ 顧客別売上グラフ表示（V1.2追加）
+
+* 顧客マスタと案件テーブルを **LEFT JOIN** して売上を集計
+* 売上未登録の顧客も 0 円として可視化
+* 集計結果を Chart.js で棒グラフ表示
+* グラフ専用ページとして独立実装
+
 ---
 
 ## 🔧 設計・構成のポイント
@@ -211,12 +281,12 @@ DB接続処理の関数化や、
 * DB接続処理を `db_conn()` として関数化し、`inc/functions.php` に切り出し
 * XSS対策用のエスケープ関数を共通関数として管理
 * HTMLヘッダーを共通コンポーネントとして include
-* CSSはUIの役割ごとに分割（button / form / table など）
+* CSSはUIの役割ごとに分割（button / form / table / chart）
 * 顧客テーブルと案件テーブルを分離し、
-  一覧表示時は **JOIN を用いてデータの関連性をDB側で担保**
+  一覧表示・集計時は **JOIN を用いてデータの関連性をDB側で担保**
 
-表示ロジックは取得済みデータの描画に専念させることで、
-保守性と拡張性を意識した設計としています。
+CRUD画面と可視化画面を分離することで、
+表示ロジック・集計処理・UI構造の役割を明確にしています。
 
 ---
 
@@ -226,6 +296,7 @@ DB接続処理の関数化や、
 * CSS
 * PHP
 * MySQL
+* Chart.js
 
 ---
 
@@ -235,6 +306,7 @@ DB接続処理の関数化や、
 assets/
 └─ css/
    ├─ buttons.css      // ボタンUI
+   ├─ chart.css        // グラフ専用スタイル（V1.2）
    ├─ form.css         // フォームUI
    ├─ responsive.css   // レスポンシブ対応
    ├─ scroll.css       // スクロールUI
@@ -257,6 +329,7 @@ deal_edit.php              // 案件編集画面（V1.1）
 deal_update_action.php     // 案件更新処理（V1.1）
 deal_create_action.php     // 案件登録処理
 deal_delete_action.php     // 案件削除処理
+sales_chart.php            // 顧客別売上グラフ（V1.2）
 ```
 
 ---
@@ -267,7 +340,8 @@ deal_delete_action.php     // 案件削除処理
 2. データベースを作成し、テーブルを準備
 3. ブラウザで `index.php` にアクセス
 4. 顧客・案件データを登録
-5. 一覧画面から内容の確認・編集・削除を実行
+5. 一覧画面でCRUD操作を実行
+6. グラフページで顧客別売上を確認
 
 ---
 
@@ -278,7 +352,7 @@ deal_delete_action.php     // 案件削除処理
 * CRUD処理における責務分離の考え方
 * 編集画面と更新処理を分離した設計
 * include を用いたコード再利用
-* UIとロジックの整理
+* 集計データの可視化とUI整理
 
 ---
 
@@ -303,8 +377,16 @@ while keeping the structure minimal, readable, and maintainable.
 The application covers the full workflow from form input
 to database insertion, list display, editing, and deletion.
 
-🔹 **In version 1.1, the file structure was reorganized with a clear separation of responsibilities,
-and edit/update (UPDATE) functionality was added to complete the CRUD cycle.**
+🔹 **Version 1.1**
+The file structure was reorganized with a clear separation of responsibilities,
+and edit/update (UPDATE) functionality was added to complete the CRUD cycle.
+
+🔹 **Version 1.2**
+A **data visualization page** was added to display aggregated sales data
+by customer using charts.
+In addition to CRUD operations, the application now includes
+a dedicated screen for **overview and analysis**, extending it toward
+a more practical business-oriented structure.
 
 ---
 
@@ -316,6 +398,7 @@ and edit/update (UPDATE) functionality was added to complete the CRUD cycle.**
 * Designing PHP files with clear responsibility separation
 * Reusing common components with `include`
 * Organizing UI using component-based CSS design
+* Visualizing aggregated data with Chart.js
 
 ---
 
@@ -355,6 +438,13 @@ and edit/update (UPDATE) functionality was added to complete the CRUD cycle.**
 * Support for selecting multiple records using checkboxes
 * Dedicated PHP file for delete processing
 
+### ▼ Customer Sales Chart (Added in v1.2)
+
+* Aggregate deal sales per customer using **LEFT JOIN**
+* Include customers with no sales as zero-value data
+* Visualize aggregated results using **Chart.js**
+* Implemented as an independent page for clear responsibility separation
+
 ---
 
 ## 🔧 Design & Architecture Notes
@@ -369,13 +459,14 @@ This application is structured with a strong focus on
   defined in `inc/functions.php`
 * XSS protection helper functions are managed as shared utilities
 * The HTML header is implemented as a shared component using `include`
-* CSS is split by role (button / form / table / responsive, etc.)
+* CSS is split by role (button / form / table / chart / responsive, etc.)
 * Customer and deal data are stored in separate tables
-* Deal list views retrieve data using **SQL JOINs**, ensuring that
-  data relationships are enforced at the database level
+* List views and aggregation logic retrieve data using **SQL JOINs**,
+  ensuring that data relationships are enforced at the database level
 
-By maintaining data relationships in SQL rather than view logic,
-the application remains simple, extensible, and resilient to change.
+By maintaining data relationships and aggregation logic in SQL
+rather than view logic, the application remains simple, extensible,
+and easier to maintain.
 
 ---
 
@@ -385,6 +476,7 @@ the application remains simple, extensible, and resilient to change.
 * CSS
 * PHP
 * MySQL
+* Chart.js
 
 ---
 
@@ -394,6 +486,7 @@ the application remains simple, extensible, and resilient to change.
 assets/
 └─ css/
    ├─ buttons.css      // Button UI styles
+   ├─ chart.css        // Chart-specific styles (v1.2)
    ├─ form.css         // Form UI styles
    ├─ responsive.css   // Responsive layout
    ├─ scroll.css       // Scrollbar customization
@@ -417,6 +510,7 @@ deal_edit.php              // Deal edit screen (v1.1)
 deal_create_action.php     // Deal create processing
 deal_update_action.php     // Deal update processing (v1.1)
 deal_delete_action.php     // Deal delete processing
+sales_chart.php            // Customer sales chart (v1.2)
 ```
 
 ---
@@ -427,7 +521,8 @@ deal_delete_action.php     // Deal delete processing
 2. Create a database and required tables
 3. Access `index.php` in your browser
 4. Register customers and deals
-5. View, edit, update, or delete records from the list screen
+5. Perform CRUD operations from the list screen
+6. View aggregated customer sales on the chart page
 
 ---
 
@@ -438,7 +533,7 @@ deal_delete_action.php     // Deal delete processing
 * Separation of responsibilities in CRUD processing
 * Clear distinction between UI files and action files
 * Code reuse with `include`
-* Structuring UI and logic for long-term maintainability
+* Aggregating and visualizing data for business insight
 
 ---
 

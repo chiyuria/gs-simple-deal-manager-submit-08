@@ -39,7 +39,11 @@ $customers = $stmt->fetchAll();
 
             <div class="col-header">
                 <h2>顧客管理</h2>
-                <button class="btn btn-ghost" onclick="location.href='index.php'">案件管理</button>
+                <div class="col-header-buttons">
+                    <button class="btn btn-ghost" onclick="location.href='index.php'">
+                        案件管理
+                    </button>
+                </div>
             </div>
 
             <div class="col-content">

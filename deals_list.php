@@ -77,9 +77,14 @@ $deals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="col-header">
                 <h2>案件管理</h2>
-                <button class="btn btn-ghost" onclick="location.href='customers_list.php'">
-                    顧客マスタ管理
-                </button>
+                <div class="col-header-buttons">
+                    <button class="btn btn-ghost" onclick="location.href='sales_chart.php'">
+                        顧客別売上
+                    </button>
+                    <button class="btn btn-ghost" onclick="location.href='customers_list.php'">
+                        顧客マスタ管理
+                    </button>
+                </div>
             </div>
 
             <div class="col-content">
