@@ -11,12 +11,12 @@ $d_sales = $_POST["d_sales"];
 
 // validation: blank fields prohibited
 if ($c_id === '' || $d_code === '' || $d_name === '' || $d_sales === '') {
-    redirect("index.php?error=blank");
+    redirect("deals_list.php?error=blank");
 }
 
 // validation: d_code is not 10 digits
 if (!preg_match('/^\d{10}$/', $d_code)) {
-    redirect("index.php?error=code");
+    redirect("deals_list.php?error=code");
 }
 
 // connect to DB
@@ -48,13 +48,13 @@ $stmt->bindValue(':d_sales', $d_sales, PDO::PARAM_INT);
 
 try {
     $stmt->execute();
-    redirect("index.php");
+    redirect("deals_list.php");
 
     // Duplicate (UNIQUE) error
     //SQLSTATE: 23000 (+ MySQL error number: 1062)
 } catch (PDOException $e) {
     if ($e->getCode() === '23000') {
-        redirect("index.php?error=duplicate");
+        redirect("deals_list.php?error=duplicate");
     }
 
     exit('error: SQL execution' . $e->getMessage());

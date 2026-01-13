@@ -1,6 +1,10 @@
 <?php
-require_once __DIR__ . "/config/db.php";
 require_once __DIR__ . "/inc/functions.php";
+
+session_start();
+require_login();
+
+require_once __DIR__ . "/config/db.php";
 
 $pdo = db_conn();
 
@@ -58,7 +62,7 @@ $data_json = json_encode($data, JSON_UNESCAPED_UNICODE);
 
             <div class="col-header">
                 <h2>顧客別売上</h2>
-                <button class="btn btn-ghost" onclick="location.href='index.php'">
+                <button class="btn btn-ghost" onclick="location.href='deals_list.php'">
                     案件管理
                 </button>
             </div>

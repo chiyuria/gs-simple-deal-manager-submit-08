@@ -1,6 +1,10 @@
 <?php
-require_once __DIR__ . "/config/db.php";
 require_once __DIR__ . "/inc/functions.php";
+
+session_start();
+require_login();
+
+require_once __DIR__ . "/config/db.php";
 
 $pdo = db_conn();
 

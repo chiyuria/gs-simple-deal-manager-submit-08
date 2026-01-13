@@ -34,5 +34,5 @@ $stmt->bindValue(":d_sales", (int)$d_sales, PDO::PARAM_INT);
 $stmt->bindValue(":d_id", $d_id, PDO::PARAM_INT);
 $stmt->execute();
 
-// back to top
-redirect("index.php");
+// back to deal_list
+redirect("deals_list.php");

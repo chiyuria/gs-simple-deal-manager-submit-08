@@ -1,6 +1,10 @@
 <?php
-require_once __DIR__ . "/config/db.php";
 require_once __DIR__ . "/inc/functions.php";
+
+session_start();
+require_login();
+
+require_once __DIR__ . "/config/db.php";
 
 $pdo = db_conn();
 
@@ -40,7 +44,7 @@ $customers = $stmt->fetchAll();
             <div class="col-header">
                 <h2>顧客管理</h2>
                 <div class="col-header-buttons">
-                    <button class="btn btn-ghost" onclick="location.href='index.php'">
+                    <button class="btn btn-ghost" onclick="location.href='deals_list.php'">
                         案件管理
                     </button>
                 </div>

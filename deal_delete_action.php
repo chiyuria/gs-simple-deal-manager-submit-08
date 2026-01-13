@@ -4,7 +4,7 @@ require_once(__DIR__ . "/inc/functions.php");
 $d_ids = $_POST["d_ids"] ?? [];
 
 if (empty($d_ids)) {
-    redirect("index.php");
+    redirect("deals_list.php");
 }
 
 // connect to DB
@@ -22,4 +22,4 @@ $stmt = $pdo->prepare($sql);
 
 $stmt->execute($d_ids);
 
-redirect("index.php");
+redirect("deals_list.php");

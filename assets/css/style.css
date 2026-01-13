@@ -103,6 +103,14 @@ body {
   font-weight: 600;
 }
 
+.app-header form.header-actions {
+  margin: 0;
+  margin-left: auto;
+  width: auto;
+  display: flex;
+  align-items: center;
+}
+
 .main-wrapper.single-column {
   display: flex;
   justify-content: center;

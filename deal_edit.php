@@ -1,6 +1,10 @@
 <?php
-require_once __DIR__ . "/config/db.php";
 require_once __DIR__ . "/inc/functions.php";
+
+session_start();
+require_login();
+
+require_once __DIR__ . "/config/db.php";
 
 $pdo = db_conn();
 
@@ -64,7 +68,7 @@ if (!$deal) {
 
             <div class="col-header">
                 <h2>案件編集</h2>
-                <button class="btn btn-ghost" onclick="location.href='index.php'">
+                <button class="btn btn-ghost" onclick="location.href='deals_list.php'">
                     戻る
                 </button>
             </div>
