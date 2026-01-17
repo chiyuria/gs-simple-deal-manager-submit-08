@@ -2,7 +2,7 @@
 require_once __DIR__ . "/inc/functions.php";
 
 session_start();
-require_login();
+require_admin();
 
 require_once __DIR__ . "/config/db.php";
 

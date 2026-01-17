@@ -45,3 +45,12 @@ function require_login() {
         exit();
     }
 }
+
+function require_admin() {
+    require_login();
+
+    if(!isset($_SESSION["u_role_flg"]) || (int)$_SESSION["u_role_flg"] !== 1) {
+        redirect("index.php");
+        exit();
+    }
+}

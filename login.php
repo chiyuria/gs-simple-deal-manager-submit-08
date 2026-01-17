@@ -9,14 +9,15 @@
     <link rel="stylesheet" href="./assets/css/buttons.css">
     <link rel="stylesheet" href="./assets/css/scroll.css">
     <link rel="stylesheet" href="./assets/css/form.css">
+    <link rel="stylesheet" href="./assets/css/login.css">
     <link rel="stylesheet" href="./assets/css/responsive.css">
 </head>
 
-<body>
+<body class="page-login">
     <header class="app-header">
         <h1 class="header-title">Simple Deal Manager</h1>
     </header>
-    
+
     <main class="main-wrapper single-column">
         <div class="col col-single">
 
