@@ -22,7 +22,6 @@ $stmtUsers = $pdo->query($sqlUsers);
 $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -48,7 +47,7 @@ $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-header">
                 <h2>ユーザー管理</h2>
                 <div class="col-header-buttons">
-                    <button class="btn btn-ghost" onclick="location.href='index.php'">
+                    <button class="btn btn-ghost" onclick="location.href='deals_list.php'">
                         案件管理
                     </button>
                 </div>
@@ -65,6 +64,7 @@ $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
                                 <th>ログインID</th>
                                 <th>ロール</th>
                                 <th>状態</th>
+                                <th>編集</th>
                             </tr>
                         </thead>
 
@@ -76,6 +76,12 @@ $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
                                     <td><?= h($u["u_login_id"]) ?></td>
                                     <td><?= ((int)$u["u_role_flg"] === 1) ? "Admin" : "User" ?></td>
                                     <td><?= ((int)$u["u_life_flg"] === 0) ? "Active" : "Disabled" ?></td>
+                                    <td>
+                                        <a class="btn btn-ghost btn-table btn-table--icon"
+                                            href="admin_user_edit.php?u_id=<?= h($u["u_id"]) ?>">
+                                            📝
+                                        </a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

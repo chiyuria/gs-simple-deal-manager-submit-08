@@ -1,7 +1,8 @@
 <?php
-ini_set("display_errors", 1);
+require_once __DIR__ . "/inc/functions.php";
 
-require_once(__DIR__ . "/inc/functions.php");
+session_start();
+require_admin();
 
 // customer registration
 $c_code = $_POST["c_code"];

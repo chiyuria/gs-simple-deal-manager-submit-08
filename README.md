@@ -29,13 +29,15 @@ DB接続処理、データ取得・更新処理、表示ロジックを明確に
 顧客マスタと案件テーブルを JOIN し、顧客別売上を集計した結果を
 **Chart.js を用いたグラフ表示ページとして独立実装**しています。
 
-そして v1.3 では、
-**ログイン認証・権限制御（管理者専用画面）** を追加しました。
+そして v1.3 では、**ログイン認証・権限制御（管理者専用画面）** を追加しました。
 
 * セッションによるログイン状態管理（ログイン必須ページ制御）
 * 権限フラグ（`u_role_flg`）による管理者専用ページ制御
 * ユーザー有効/無効（`u_life_flg`）によるログイン可否判定
-* **ユーザー管理画面（admin_users.php）** の追加
+* **ユーザー管理画面（`admin_users.php`）の追加**
+* **ユーザー編集画面（`admin_user_edit.php`）と更新処理（`admin_user_update_action.php`）の追加**
+
+  * 管理者がユーザーの **ロール変更** と **有効/無効切替** を実行可能
 
 ---
 
@@ -138,11 +140,19 @@ v1.3 では、ログイン画面（`login.php`）と認証処理（`login_action
 
 ---
 
-### ■ 管理者向け：ユーザー管理画面の追加（v1.3 Update）
+### ■ 管理者向け：ユーザー管理（ロール変更 / 有効・無効切替）（v1.3 Update）
 
 管理者のみアクセス可能な **ユーザー管理画面（`admin_users.php`）** を追加しました。
-`user_master` テーブルのユーザー情報（ID／ログインID／ロール／状態）を一覧表示し、
-権限制御（Admin / User）と状態（Active / Disabled）の確認を可能にしています。
+`user_master` のユーザー情報（ID／ログインID／ロール／状態）を一覧表示し、
+編集画面（`admin_user_edit.php`）から対象ユーザーを選択して、
+
+* **ロール変更（Admin / User）**
+* **状態変更（Active / Disabled）**
+
+を更新できる構成としています。
+
+更新処理は `admin_user_update_action.php` に分離し、
+`require_admin()` により **管理者以外の更新処理を遮断**しています。
 
 ---
 
@@ -152,7 +162,7 @@ v1.3 では、ログイン画面（`login.php`）と認証処理（`login_action
 これにより、ナビゲーションの追加・修正を1箇所で管理できるようにしています。
 
 また、スマホ表示ではヘッダー内ボタンが潰れないように
-ヘッダーが折り返し可能な設計に調整しました（flex-wrap対応）。  
+ヘッダーが折り返し可能な設計に調整しました（flex-wrap対応）。
 
 ---
 
@@ -164,7 +174,8 @@ v1.3 では、ログイン画面（`login.php`）と認証処理（`login_action
 * 編集画面での初期値反映（value / selected / hidden を用いたフォーム制御）
 * JOINによる一覧表示・集計処理の整理
 * ログイン認証（セッション管理）と権限制御の設計（v1.3）
-* 管理者専用画面の導線と制御（ユーザー管理画面追加）
+* 管理者専用画面の導線と制御（ユーザー管理の追加）
+* ロール・状態を更新する処理の設計（編集画面 + 更新アクション）
 
 ---
 
@@ -184,7 +195,7 @@ v1.3 では、ログイン画面（`login.php`）と認証処理（`login_action
 編集（EDIT）・更新（UPDATE）まで含めたCRUD一連の流れを実装しました。
 
 また v1.2 で集計・可視化ページを追加し、
-v1.3 でログイン認証・権限制御（管理者専用画面／ユーザー管理画面）まで拡張することで、
+v1.3 でログイン認証・権限制御（管理者専用画面／ユーザー管理）まで拡張することで、
 業務アプリとしての基本構成を段階的に広げています。
 
 ---
@@ -211,8 +222,7 @@ v1.3 でログイン認証・権限制御（管理者専用画面／ユーザー
 
 🔹 **V1.3**
 ログイン認証を導入し、**ログイン必須ページ・管理者専用ページ制御**を実装。
-さらに、管理者向けの **ユーザー管理画面（admin_users.php）** を追加し、
-権限・状態の一覧表示を可能にしました。
+さらに管理者向けの **ユーザー管理（ロール変更 / 有効・無効切替）** を追加しました。
 
 ---
 
@@ -259,10 +269,11 @@ v1.3 でログイン認証・権限制御（管理者専用画面／ユーザー
 * 有効ユーザー（`u_life_flg = 0`）のみログイン可能
 * 権限フラグ（`u_role_flg`）による管理者専用ページ制御
 
-### ▼ ユーザー管理画面（Admin Only / V1.3）
+### ▼ ユーザー管理（Admin Only / V1.3）
 
-* `user_master` のユーザー情報を一覧表示
-* ロール（Admin / User）と状態（Active / Disabled）を表示
+* `user_master` のユーザー情報を一覧表示（`admin_users.php`）
+* 編集画面（`admin_user_edit.php`）でロール・状態を変更可能
+* 更新処理は `admin_user_update_action.php` に分離
   ※管理者のみアクセス可能（`require_admin()`）
 
 ---
@@ -276,10 +287,10 @@ v1.3 でログイン認証・権限制御（管理者専用画面／ユーザー
 * XSS対策の `h()` など共通関数を集中管理
 * ヘッダーを `inc/header.php` として共通化
 * CSSはUIの役割ごとに分割（button / form / table / chart / login）
-* スマホ時のヘッダー崩れを防ぐため折り返し設計を調整  
+* スマホ時のヘッダー崩れを防ぐため折り返し設計を調整
 * Chart描画は「PHP集計 → JS描画 → CSSレイアウト」で責務分離
-* テーブルUIは共通スタイルとして管理（deal/usersで調整） 
-* UIトークン（root変数）による一括デザイン制御 
+* テーブルUIは共通スタイルとして管理（deal/usersで調整）
+* UIトークン（root変数）による一括デザイン制御
 
 ---
 
@@ -298,63 +309,50 @@ v1.3 でログイン認証・権限制御（管理者専用画面／ユーザー
 ```
 assets/
 ├─ css/
-│  ├─ buttons.css          // ボタンUI
-│  ├─ chart.css            // グラフ専用スタイル（v1.2）
-│  ├─ form.css             // フォームUI
-│  ├─ login.css            // ログイン画面専用スタイル（v1.3）
-│  ├─ responsive.css       // レスポンシブ対応
-│  ├─ scroll.css           // スクロールUI
-│  ├─ style.css            // 共通スタイル（root変数含む）
-│  └─ table.css            // テーブルUI
+│  ├─ buttons.css
+│  ├─ chart.css
+│  ├─ form.css
+│  ├─ login.css
+│  ├─ responsive.css
+│  ├─ scroll.css
+│  ├─ style.css
+│  └─ table.css
 └─ js/
-   └─ renderSalesChart.js  // Chart描画モジュール（v1.2）
+   └─ renderSalesChart.js
 
 config/
-├─ .htaccess
-└─ db.php                  // DB接続情報
+└─ db.php
 
 inc/
-├─ functions.php           // 共通関数（h(), db_conn(), redirect(), 認証系require_*）
-└─ header.php              // 共通ヘッダー（旧 header.html）
+├─ functions.php
+└─ header.php
 
-tools/                     // ※ignore（開発補助）
-└─ make_hash.php           // パスワードハッシュ生成
+deals_list.php
+deal_create_action.php
+deal_edit.php
+deal_update_action.php
+deal_delete_action.php
 
-deals_list.php             // 案件管理（登録・一覧・編集導線・削除）
-deal_create_action.php     // 案件登録処理
-deal_edit.php              // 案件編集画面（v1.1）
-deal_update_action.php     // 案件更新処理（v1.1）
-deal_delete_action.php     // 案件削除処理
+customers_list.php
+customer_create_action.php
 
-customers_list.php         // 顧客管理（管理者専用）
-customer_create_action.php // 顧客登録処理
+sales_chart.php
 
-sales_chart.php            // 顧客別売上グラフ（v1.2）
+admin_users.php
+admin_user_edit.php
+admin_user_update_action.php
 
-admin_users.php            // ユーザー管理（管理者専用 / v1.3）
-
-login.php                  // ログイン画面（v1.3）
-login_action.php           // ログイン処理
-logout_action.php          // ログアウト処理
+login.php
+login_action.php
+logout_action.php
 ```
-
----
-
-## ▶ 使い方（How to Use）
-
-1. ローカル環境でPHPとMySQLを起動（XAMPP 等）
-2. データベースを作成し、テーブルを準備
-3. ブラウザで `deals_list.php`（または `index.php`）にアクセス
-4. ログインして顧客・案件データを登録
-5. 一覧画面でCRUD操作を実行
-6. グラフページで顧客別売上を確認
 
 ---
 
 ## 📄 注意事項
 
-* 本プロジェクトは **学習目的** で制作しています
-* セキュリティ・バリデーションは最小限の実装です
+* This project is created **for learning purposes**
+* Security measures and validation are intentionally minimal
 
 ---
 
@@ -382,7 +380,8 @@ A dedicated chart page was added to visualize aggregated sales data by customer 
 
 🔹 **Version 1.3**
 Login authentication and role-based access control were implemented.
-Administrator-only pages were added, including a **User Management screen (`admin_users.php`)**.
+Administrator-only screens were added, including a **User Management feature**
+that allows updating user **role** and **status**.
 
 ---
 
@@ -429,80 +428,12 @@ Administrator-only pages were added, including a **User Management screen (`admi
 * Only active users (`u_life_flg = 0`) can log in
 * Role-based access control using `u_role_flg`
 
-### ▼ User Management Screen (Admin Only / v1.3)
+### ▼ User Management (Admin Only / v1.3)
 
-* Display user list from `user_master`
-* Show role (Admin / User) and status (Active / Disabled)
+* Display user list from `user_master` (`admin_users.php`)
+* Edit user role/status via `admin_user_edit.php`
+* Update processing separated into `admin_user_update_action.php`
 * Admin-only access control via `require_admin()`
-
----
-
-## 🔧 Design & Architecture Notes
-
-This application is structured with a strong focus on
-**clear separation of responsibilities and readability**.
-
-* Database configuration is centralized in `config/db.php`
-* DB connection logic is encapsulated in `db_conn()` (`inc/functions.php`)
-* Shared helper functions like `h()` (escape) are centralized
-* Common header is implemented as `inc/header.php`
-* CSS is split by role (button / form / table / chart / login)
-* Mobile header layout is adjusted to prevent button collapse  
-* Table styles are shared and extended for users/deals lists 
-* UI tokens (root variables) are used for consistent design control 
-
----
-
-## 🛠 Tech Stack
-
-* HTML
-* CSS
-* PHP
-* MySQL
-* Chart.js
-
----
-
-## 🗂 Directory Structure
-
-```
-assets/
-├─ css/
-│  ├─ buttons.css
-│  ├─ chart.css
-│  ├─ form.css
-│  ├─ login.css
-│  ├─ responsive.css
-│  ├─ scroll.css
-│  ├─ style.css
-│  └─ table.css
-└─ js/
-   └─ renderSalesChart.js
-
-config/
-└─ db.php
-
-inc/
-├─ functions.php
-└─ header.php
-
-deals_list.php
-deal_create_action.php
-deal_edit.php
-deal_update_action.php
-deal_delete_action.php
-
-customers_list.php
-customer_create_action.php
-
-sales_chart.php
-
-admin_users.php
-
-login.php
-login_action.php
-logout_action.php
-```
 
 ---
 

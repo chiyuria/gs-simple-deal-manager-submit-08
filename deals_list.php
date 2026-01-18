@@ -112,7 +112,7 @@ $deals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="c_id" id="c_id">
                                     <option value="">--- SELECT CUSTOMER ---</option>
                                     <?php foreach ($customers as $c): ?>
-                                        <option value="<?= $c["c_id"] ?>">
+                                        <option value="<?= h($c["c_id"]) ?>">
                                             <?= h($c["c_code"]) ?>｜<?= h($c["c_name"]) ?>
                                         </option>
                                     <?php endforeach; ?>
