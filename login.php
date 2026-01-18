@@ -1,3 +1,7 @@
+<?php
+// login.php
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -22,7 +26,7 @@
         <div class="col col-single">
 
             <div class="col-header">
-                <h2>ユーザー認証</h2>
+                <h2>Login</h2>
             </div>
 
             <div class="col-content">
@@ -30,13 +34,25 @@
                 <form action="login_action.php" method="post">
                     <fieldset>
                         <div class="form-row">
-                            <label class="form-label" for="u_login_id">ID</label>
-                            <input type="text" name="u_login_id" id="u_login_id">
+                            <label class="form-label" for="u_login_id">User ID</label>
+                            <input
+                                type="text"
+                                name="u_login_id"
+                                id="u_login_id"
+                                required
+                                placeholder="Enter Your ID"
+                            >
                         </div>
 
                         <div class="form-row">
-                            <label class="form-label" for="u_login_pw">PW</label>
-                            <input type="password" name="u_login_pw" id="u_login_pw">
+                            <label class="form-label" for="u_login_pw">Password</label>
+                            <input
+                                type="password"
+                                name="u_login_pw"
+                                id="u_login_pw"
+                                required
+                                placeholder="Enter Your Password"
+                            >
                         </div>
 
                         <button type="submit" class="btn btn-primary">

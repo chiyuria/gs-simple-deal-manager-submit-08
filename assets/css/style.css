@@ -103,9 +103,16 @@ body {
   font-weight: 600;
 }
 
+.app-header .header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-left: auto;
+}
+
 .app-header form.header-actions {
   margin: 0;
-  margin-left: auto;
+  margin-left: 1.2rem;
   width: auto;
   display: flex;
   align-items: center;

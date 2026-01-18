@@ -1,5 +1,6 @@
-/* responsive */
 @media (hover: none) and (pointer: coarse), (max-width: 768px) {
+
+  /* ---- Layout ---- */
   .main-wrapper.single-column {
     height: auto;
   }
@@ -11,9 +12,12 @@
   form {
     width: 100%;
   }
+
   .section-block {
     max-width: 100%;
   }
+
+  /* ---- Tables ---- */
   .table {
     font-size: 1.2rem;
   }
@@ -23,6 +27,8 @@
     padding: 0.6rem 0.8rem;
     white-space: nowrap;
   }
+
+  /* ---- Forms ---- */
   .deal-form,
   .customer-form {
     grid-template-columns: 1fr !important;
@@ -41,5 +47,34 @@
     width: 100%;
   }
 
-}
+  /* ---- Header (prevent button collapse) ---- */
+  /* allow wrapping instead of squeezing buttons into vertical text */
+  .app-header {
+    height: auto;
+    padding: var(--space-2);
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
 
+  .header-title {
+    flex: 1 1 100%;
+    font-size: 1.4rem;
+    line-height: 1.2;
+  }
+
+  .app-header .header-nav {
+    margin-left: 0;     /* desktop right-align reset */
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .app-header form.header-actions {
+    margin-left: auto;  /* keep logout at the far right */
+  }
+
+  /* ---- Login Page ---- */
+  .page-login .main-wrapper.single-column {
+    padding-top: 6rem;
+  }
+}

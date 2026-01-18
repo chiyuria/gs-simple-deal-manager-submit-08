@@ -36,7 +36,7 @@ $customers = $stmt->fetchAll();
 </head>
 
 <body>
-    <?php include "./inc/header.html"; ?>
+    <?php include "./inc/header.php"; ?>
 
     <main class="main-wrapper single-column">
         <div class="col col-single">

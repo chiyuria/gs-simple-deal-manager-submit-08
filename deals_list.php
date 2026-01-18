@@ -74,7 +74,7 @@ $deals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
-    <?php include "./inc/header.html"; ?>
+    <?php include "./inc/header.php"; ?>
 
     <main class="main-wrapper single-column">
         <div class="col col-single">
@@ -85,11 +85,6 @@ $deals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <button class="btn btn-ghost" onclick="location.href='sales_chart.php'">
                         顧客別売上
                     </button>
-                    <?php if ($_SESSION["u_role_flg"] === 1): ?>
-                        <button class="btn btn-ghost" onclick="location.href='customers_list.php'">
-                            顧客マスタ管理
-                        </button>
-                    <?php endif; ?>
                 </div>
             </div>
 

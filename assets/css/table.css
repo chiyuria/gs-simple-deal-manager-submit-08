@@ -1,3 +1,4 @@
+/* Common Table Style */
 .table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -42,11 +43,22 @@
   background: var(--form-bg-focus);
 }
 
-.table td:nth-child(4) {
+/* Deals Table */
+.deal-table td:nth-child(4) {
   text-align: right;
   font-family: var(--font-ui);
 }
 
-.table td:nth-child(5) {
+.deal-table td:nth-child(5) {
+  font-weight: 500;
+}
+
+/* Users Table */
+.users-table td:nth-child(4) {
+  text-align: left;
+  font-family: var(--font-jp), var(--font-ui);
+}
+
+.users-table td:nth-child(5) {
   font-weight: 500;
 }
